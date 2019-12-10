@@ -6,8 +6,11 @@ const {width, height} = Dimensions.get('window');
 //状态栏高度
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? (utils.isIphoneX() ? 44 : 20) : StatusBar.currentHeight;
 
-export default {
+const JISUKEY = '62871647e0add123'
+
+export {
   width,
   height,
-  STATUSBAR_HEIGHT
+  STATUSBAR_HEIGHT,
+  JISUKEY
 }

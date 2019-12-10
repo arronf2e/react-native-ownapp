@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     height: 44,
-    marginTop: config.STATUSBAR_HEIGHT,
     paddingHorizontal: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -48,7 +47,6 @@ const styles = StyleSheet.create({
   },
   titleWrap: {
     position: 'absolute',
-    width: config.width,
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',

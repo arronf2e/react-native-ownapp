@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
 
 // 函数式组件，接收props，返回组件
 const NewsItem = ({ news }) => {
-  console.log(news.pic);
   return (
     <TouchableOpacity>
       <View style={styles.itemWrap}>
