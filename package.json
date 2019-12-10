@@ -1,0 +1,47 @@
+{
+  "name": "ReactNative",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start --port=8082",
+    "test": "jest",
+    "lint": "eslint .",
+    "postinstall": "jetifier -r"
+  },
+  "dependencies": {
+    "mobx": "^5.15.0",
+    "mobx-react": "^6.1.4",
+    "react": "16.9.0",
+    "react-native": "0.61.4",
+    "react-native-gesture-handler": "^1.5.0",
+    "react-native-reanimated": "^1.4.0",
+    "react-native-screens": "^2.0.0-alpha.11",
+    "react-native-svg": "^9.13.5",
+    "react-navigation": "^4.0.10",
+    "react-navigation-stack": "^1.10.3",
+    "react-navigation-tabs": "^2.5.6",
+    "timeago.js": "^4.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-proposal-decorators": "^7.7.4",
+    "@babel/runtime": "^7.7.2",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "@types/react": "^16.9.11",
+    "@types/react-native": "^0.60.22",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-root-import": "^6.4.1",
+    "eslint": "^6.6.0",
+    "jest": "^24.9.0",
+    "jetifier": "^1.6.4",
+    "metro-react-native-babel-preset": "^0.57.0",
+    "react-native-typescript-transformer": "^1.2.13",
+    "react-test-renderer": "16.9.0",
+    "typescript": "^3.7.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
