@@ -77,6 +77,7 @@ class Home extends Component<HomeProps, HomeState> {
       start: 20,
       loading: true
     };
+    this.flatListRef = React.createRef();
   }
 
   componentDidMount() {
@@ -137,9 +138,9 @@ class Home extends Component<HomeProps, HomeState> {
       selectedTab: tab,
       start: 20,
     }, () => {
-      // this.flatListRef.scrollToOffset({ animated: true, offset: 0 });
+      this.flatListRef.scrollToOffset({ animated: true, offset: 0 });
+      this.getNewsListByType();
     });
-    this.getNewsListByType();
   }
 
   _onEndReached = () => {
@@ -185,6 +186,7 @@ class Home extends Component<HomeProps, HomeState> {
         </View>: null
         }
         <FlatList
+          ref={(ref) => { this.flatListRef = ref; }}
           style={styles.newsList}
           data={newsList}
           onEndReached={this._onEndReached}
