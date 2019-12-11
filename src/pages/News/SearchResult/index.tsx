@@ -51,15 +51,25 @@ class SearchResult extends Component<HomeDetailProps, HomeDetailState> {
       });
   };
 
+  _toDetail = news => {
+    this.props.navigation.navigate("NewsDetail", {
+      news: news
+    });
+  };
+
   render() {
     const { newsList } = this.state;
     return (
       <SafeAreaView>
         <StatusBar translucent={false} />
         <View style={styles.container}>
-          {newsList.length ? newsList.map(news => (
-            <NewsItem news={news} />
-          )): <Text>查不到相关新闻</Text>}
+          {newsList.length ? (
+            newsList.map(news => (
+              <NewsItem news={news} viewDetail={e => this._toDetail(news, e)} />
+            ))
+          ) : (
+            <Text>查不到相关新闻</Text>
+          )}
         </View>
       </SafeAreaView>
     );
