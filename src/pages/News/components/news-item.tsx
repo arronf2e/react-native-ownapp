@@ -8,8 +8,6 @@ import {
   Image
 } from "react-native";
 
-import { format } from "timeago.js";
-
 const styles = StyleSheet.create({
   itemWrap: {
     paddingLeft: 10,
@@ -49,27 +47,23 @@ const styles = StyleSheet.create({
 
 // 函数式组件，接收props，返回组件
 const NewsItem = ({ news, viewDetail }) => {
-	const showPic = news.images && news.images.length > 0;
-	console.log(viewDetail, 'viewDetail')
   return (
     <TouchableOpacity onPress={news => viewDetail(news)}>
       <View style={styles.itemWrap}>
         <View style={styles.item}>
           <View style={styles.content}>
-            <Text style={styles.title}>{news.desc}</Text>
+            <Text style={styles.title}>{news.title}</Text>
             <View style={styles.info}>
-              <Text style={styles.src}>{news.who}</Text>
+              <Text style={styles.src}>{news.src}</Text>
               <Text style={styles.time}>
-                {format(news.publishedAt, "zh_CN")}
+                {news.pdate}
               </Text>
             </View>
           </View>
-          {showPic ? (
-            <Image
-              style={{ width: 80, height: 60 }}
-              source={{ uri: news.images[0] }}
-            />
-          ) : null}
+          <Image
+            style={{ width: 80, height: 60 }}
+            source={{ uri: news.img }}
+          />
         </View>
       </View>
     </TouchableOpacity>

@@ -15,8 +15,6 @@ import { observer, inject } from "mobx-react";
 import { NavigationProps } from "~/interfaces";
 import NewsItem from "./components/news-item";
 
-import { JISUKEY } from "~/config";
-
 // props 接口，描述该组件的props数据结构
 interface HomeProps extends NavigationProps {
   [key: string]: any;
@@ -28,36 +26,40 @@ interface HomeState {
 }
 
 const styles = StyleSheet.create({
+  wrap: {
+    flexDirection: "row"
+  },
   tabContainer: {
-    width: "120%",
-    // flex: 1,
-    height: 30,
-    flexDirection: "row",
-    flexWrap: "nowrap"
+    flex: 1,
+    // height: 30,
   },
   tabItem: {
-    width: 50,
     justifyContent: "center",
     alignItems: "center",
-    color: "#333"
+    color: "#333",
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10
   },
   activeTab: {
     color: "red",
-    borderBottomWidth: 1,
-    borderBottomColor: "#00FF00"
+    backgroundColor: '#F0F0F0'
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#00FF00"
   },
   newsList: {
-    paddingBottom: 200
+    width: 220
   },
-  loading: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
+  // loading: {
+  //   position: "absolute",
+  //   left: 0,
+  //   right: 0,
+  //   top: 0,
+  //   bottom: 0,
+  //   alignItems: "center",
+  //   justifyContent: "center"
+  // }
 });
 
 // 类组件，需要继承React的Component或PureComponent
@@ -74,125 +76,110 @@ class Home extends Component<HomeProps, HomeState> {
       tabs: [],
       selectedTab: "",
       newsList: [],
-      start: 20,
-      loading: true
+      results: {},
+      loading: false
     };
     this.flatListRef = React.createRef();
   }
 
   componentDidMount() {
-    fetch(`https://api.jisuapi.com/news/channel?appkey=${JISUKEY}`)
+    fetch(`http://gank.io/api/today`)
       .then(response => {
         return response.json();
       })
       .then(res => {
-        console.log(res, 'typelist')
         this.setState({
-          tabs: res.result || [],
-          selectedTab: res.result[0]
-        }, () => {
-          this.getNewsListByType();
+          tabs: res.category || [],
+          selectedTab: res.category[0],
+          results: res.results,
+          newsList: res.results[res.category[0]]
+        });
+        this.setState({
+          loading: false
         });
       });
   }
 
-  getNewsListByType = () => {
-    const { start, selectedTab, newsList } = this.state;
-    console.log(start, selectedTab, '1')
-    fetch(
-      `https://api.jisuapi.com/news/get?channel=${selectedTab}&start=${start}&num=20&appkey=${JISUKEY}`
-    )
-      .then(response => {
-        return response.json();
-      })
-      .then(res => {
-        this.setState({
-          loading: false
-        })
-        const list =  newsList.concat(res.result.list)
-        this.setState({
-          newsList: list
-        });
-      });
-  };
-
-  private changeName = (name, text) => {
-    if (name === this.state.name) {
-      // 调用setState时，无论数据有没有发生改变，都会调用render，这里需要加下判断
-      return;
-    }
-    this.props.home.changeText(text);
-    // setState 改变state数据
-    this.setState({ name }, () => {
-      // 这里是回调，在这里想干啥干啥
-    });
-  };
-
-  private toDetail = () => {
+  _toDetail = news => {
     // 路由跳转
-    this.props.navigation.navigate("HomeDetail", { name: this.state.name });
+    console.log(news, "news");
+    this.props.navigation.navigate("HomeDetail", {
+      url: news.url,
+      title: news.desc
+    });
   };
 
   _chooseTab = tab => {
-    this.setState({
-      selectedTab: tab,
-      start: 20,
-    }, () => {
-      this.flatListRef.scrollToOffset({ animated: true, offset: 0 });
-      this.getNewsListByType();
-    });
-  }
+    this.setState(
+      {
+        selectedTab: tab,
+        newsList: this.state.results[tab]
+      },
+      () => {
+        this.flatListRef.scrollToOffset({ animated: true, offset: 0 });
+      }
+    );
+  };
 
   _onEndReached = () => {
-    console.log('end')
-    const {start} = this.state
+    console.log("end");
+    const { start } = this.state;
     this.setState({
       start: start + 1
-    }, () => {
-      this.getNewsListByType();
-    })
-  }
+    });
+  };
 
   render() {
     const { selectedTab, tabs, newsList, loading } = this.state;
-    console.log(newsList, "11");
+    console.log(newsList, "newslist");
     return (
       <SafeAreaView>
-        <StatusBar translucent={false} />
-        <ScrollView
-          style={styles.tabContainer}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        >
-          {tabs.map(item => (
-            <TouchableOpacity number={0} onPress={() => this._chooseTab(item)}>
-              <Text
-                style={[
-                  styles.tabItem,
-                  selectedTab === item ? styles.activeTab : null
-                ]}
-                key={item}
+        <StatusBar translucent={false} backgroundColor={'#FFF'} color={'#000'}/>
+        <View style={styles.wrap}>
+          <View
+            style={styles.tabContainer}
+            // horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          >
+            {tabs.map(item => (
+              <TouchableOpacity
+                number={0}
+                onPress={() => this._chooseTab(item)}
               >
-                {item}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-        {/* <ActivityIndicator animating={true} color="red" size="large" /> */}
-        
-        {
-          loading ?<View style={styles.loading}>
-          <ActivityIndicator size='large' />
-        </View>: null
-        }
-        <FlatList
-          ref={(ref) => { this.flatListRef = ref; }}
-          style={styles.newsList}
-          data={newsList}
-          onEndReached={this._onEndReached}
-          onEndReachedThreshold={11}
-          renderItem={({ item }) => <NewsItem key={item} news={item} />}
-        />
+                <Text
+                  style={[
+                    styles.tabItem,
+                    selectedTab === item ? styles.activeTab : null
+                  ]}
+                  key={item}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {/* <ActivityIndicator animating={true} color="red" size="large" /> */}
+
+          {loading ? (
+            <View style={styles.loading}>
+              <ActivityIndicator size="large" />
+            </View>
+          ) : null}
+          <FlatList
+            ref={ref => {
+              this.flatListRef = ref;
+            }}
+            style={styles.newsList}
+            data={newsList}
+            renderItem={({ item }) => (
+              <NewsItem
+                viewDetail={e => this._toDetail(item, e)}
+                key={item._id}
+                news={item}
+              />
+            )}
+          />
+        </View>
       </SafeAreaView>
     );
   }
